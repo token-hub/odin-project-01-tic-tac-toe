@@ -1,5 +1,5 @@
 body {
-    /* background-color: red; */
+    margin: 0;
 }
 
 .container {
@@ -10,8 +10,34 @@ body {
 }
 
 #start-btn {
+    display: none;
 }
 
 .gameboard {
-    display: none;
+    position: relative;
+    height: 500px;
+    width: 500px;
+    background-color: pink;
+}
+
+.gameboard-row {
+    height: 33.33%;
+    background-color: green;
+    display: flex;
+}
+
+.box {
+    height: 100%;
+    width: 33.33%;
+    background-color: aqua;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    padding: 2px;
+}
+
+.box p {
+    font-size: 25px;
+    font-weight: 300;
 }
