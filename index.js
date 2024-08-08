@@ -37,11 +37,11 @@ const displayController = function () {
         startBtn.style.display = hide ? "none" : "block";
     };
 
-    const headerDisplay = (playerName, hide = false) => {
+    const headerDisplay = (playerName, mark, hide = false) => {
         header.style.display = hide ? "none" : "block";
 
         const player = document.querySelector("#player");
-        if (player) player.innerHTML = playerName;
+        if (player) player.innerHTML = `${playerName} (${mark})`;
     };
 
     const boardGameDisplay = (hide = false) => {
@@ -77,8 +77,8 @@ const displayController = function () {
         }
     };
 
-    const updateCurrentPlayer = (pname) => {
-        if (player) player.innerHTML = pname;
+    const updateCurrentPlayer = (pname, mark) => {
+        if (player) player.innerHTML = `${pname} (${mark})`;
     };
 
     const markBox = (event, currentPlayer) => {
@@ -117,7 +117,7 @@ const gameboard = (function () {
         display.updatePlayerName(playerX, "player1");
         display.updatePlayerName(playerO, "player2");
         display.startContainerDisplay(true);
-        display.headerDisplay(currentPlayer.getName());
+        display.headerDisplay(currentPlayer.getName(), currentPlayer.mark);
     };
 
     const restartGame = () => {
@@ -130,7 +130,7 @@ const gameboard = (function () {
         display.restartContainerDisplay(true);
         display.removeAllMarks();
         display.boardGameDisplay(true);
-        display.headerDisplay(currentPlayer.getName(), true);
+        display.headerDisplay(currentPlayer.getName(), currentPlayer.mark, true);
         display.startContainerDisplay();
     };
 
@@ -167,7 +167,7 @@ const gameboard = (function () {
             currentPlayer = playerX;
         }
 
-        display.updateCurrentPlayer(currentPlayer.getName());
+        display.updateCurrentPlayer(currentPlayer.getName(), currentPlayer.mark);
     };
 
     const markBox = (event) => {
