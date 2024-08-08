@@ -10,7 +10,18 @@ const gameboard = (function () {
     // start / restart game
     const playerX = player("x");
     const playerO = player("0");
+    const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
+    const playerXPatterns = [];
+    const playerOPatterns = [];
 
+    // if player x click box 1.
+    // if the total count of player marks is => 3
+    // -- loop through the winning patterns
+    // -- each winning pattern will need to be loop again 3 times.
+    // if a all the box numbers of the current winning pattern matches with the current player clicked boxes then it's a win.
+
+    // * new task
+    // record each box clicked by the current player.
     let currentPlayer = playerX.name;
 
     const hideStartButton = () => {
