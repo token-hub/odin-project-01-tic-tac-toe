@@ -33,7 +33,13 @@ const gameboard = (function () {
         showHeader();
     };
 
-    return { showBoard };
+    const markBox = (event) => {
+        const selectedBox = event.target;
+        const pTag = selectedBox.querySelector("p");
+        pTag.innerHTML = currentPlayer;
+    };
+
+    return { showBoard, markBox };
 })();
 
 // * task 1
