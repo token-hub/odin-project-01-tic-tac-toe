@@ -8,7 +8,14 @@
     </head>
     <body>
         <div class="container">
-            <button id="start-btn" onClick="gameboard.showBoard()">Start</button>
+            <div class="start-container">
+                <label for="player1">Player 1</label>
+                <input type="text" id="player1" />
+                <br />
+                <label for="player2">Player 2</label>
+                <input type="text" id="player2" />
+                <button id="start-btn" onClick="gameboard.startGame()">Start</button>
+            </div>
             <div>
                 <h3 id="header">Current Player: <span id="player"></span></h3>
                 <div class="gameboard">

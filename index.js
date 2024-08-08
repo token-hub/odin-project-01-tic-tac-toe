@@ -1,5 +1,6 @@
-const player = function (name) {
+const player = function (mark = "x") {
     let selectedBoxes = [];
+    let name = "";
 
     const recordSelectedBox = (boxId) => {
         selectedBoxes.push(boxId);
@@ -13,18 +14,26 @@ const player = function (name) {
         return [...selectedBoxes]; // Return a copy to prevent external modification
     };
 
-    return { name, getSelectedBoxes, recordSelectedBox, emptySelectedBoxes };
+    const changeName = (newName) => {
+        name = newName;
+    };
+
+    const getName = () => {
+        return name;
+    };
+
+    return { mark, name, getSelectedBoxes, recordSelectedBox, emptySelectedBoxes, changeName, getName };
 };
 
 const gameboard = (function () {
     const playerX = player("x");
-    const playerO = player("0");
+    const playerO = player("o");
     const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
     let totalSelectedBoxes = 0;
     let currentPlayer = playerX;
 
-    const hideStartButton = () => {
-        const startBtn = document.querySelector("#start-btn");
+    const hideStartContainer = () => {
+        const startBtn = document.querySelector(".start-container");
         startBtn.style.display = "none";
     };
 
@@ -33,13 +42,20 @@ const gameboard = (function () {
         header.style.display = "block";
 
         const player = document.querySelector("#player");
-        if (player) player.innerHTML = currentPlayer.name;
+        if (player) player.innerHTML = currentPlayer.getName();
     };
 
-    const showBoard = () => {
+    const startGame = () => {
         const board = document.querySelector(".gameboard");
         board.style.display = "block";
-        hideStartButton();
+
+        const player1 = document.querySelector("#player1");
+        playerX.changeName(player1.value);
+
+        const player2 = document.querySelector("#player2");
+        playerO.changeName(player2.value);
+
+        hideStartContainer();
         showHeader();
     };
 
@@ -53,7 +69,7 @@ const gameboard = (function () {
         totalSelectedBoxes = 0;
 
         const header = document.querySelector("#header");
-        header.innerHTML = `Current Player: <span id="player">${currentPlayer.name}</span>`;
+        header.innerHTML = `Current Player: <span id="player">${currentPlayer.getName()}</span>`;
 
         const restartContainer = document.querySelector(".restart-container");
         restartContainer.style.display = "none";
@@ -70,7 +86,7 @@ const gameboard = (function () {
         const header = document.querySelector("#header");
 
         if (!isNoAvailableMoves) {
-            header.innerHTML = `The game ended! Player ${currentPlayer.name} won the game!`;
+            header.innerHTML = `The game ended! Player ${currentPlayer.getName()} won the game!`;
         } else {
             header.innerHTML = `The game ended! No Player won the game`;
         }
@@ -100,21 +116,21 @@ const gameboard = (function () {
     };
 
     const changePlayer = () => {
-        if (currentPlayer.name == "x") {
+        if (currentPlayer.getName() == playerX.getName()) {
             currentPlayer = playerO;
         } else {
             currentPlayer = playerX;
         }
 
         const player = document.querySelector("#player");
-        if (player) player.innerHTML = currentPlayer.name;
+        if (player) player.innerHTML = currentPlayer.getName();
     };
 
     const markBox = (event) => {
         const selectedBox = event.target;
         const pTag = selectedBox.querySelector("p");
         const boxId = selectedBox.id;
-        if (pTag !== "") pTag.innerHTML = currentPlayer.name;
+        if (pTag !== "") pTag.innerHTML = currentPlayer.mark;
         currentPlayer.recordSelectedBox(boxId);
         totalSelectedBoxes++;
         checkWinningPattern();
@@ -122,5 +138,5 @@ const gameboard = (function () {
         changePlayer();
     };
 
-    return { showBoard, markBox, restartGame };
+    return { startGame, markBox, restartGame };
 })();
