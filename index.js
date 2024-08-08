@@ -1,6 +1,19 @@
 const gameboard = (function () {
     // start / restart game
-    return {};
+
+    const hideStartButton = () => {
+        const startBtn = document.querySelector("#start-btn");
+        startBtn.style.display = "none";
+    };
+
+    const showBoard = () => {
+        const board = document.querySelector(".gameboard");
+        board.style.display = "block";
+
+        hideStartButton();
+    };
+
+    return { showBoard, hideStartButton };
 })();
 
 // player x and player o
