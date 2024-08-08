@@ -25,74 +25,112 @@ const player = function (mark = "x") {
     return { mark, name, getSelectedBoxes, recordSelectedBox, emptySelectedBoxes, changeName, getName };
 };
 
-const gameboard = (function () {
-    const playerX = player("x");
-    const playerO = player("o");
-    const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
-    let totalSelectedBoxes = 0;
-    let currentPlayer = playerX;
+const displayController = function () {
+    const startBtn = document.querySelector(".start-container");
+    const header = document.querySelector("#header");
+    const board = document.querySelector(".gameboard");
+    const restartContainer = document.querySelector(".restart-container");
+    const boxes = document.querySelectorAll(".box");
+    const player = document.querySelector("#player");
 
     const hideStartContainer = () => {
-        const startBtn = document.querySelector(".start-container");
         startBtn.style.display = "none";
     };
 
-    const showHeader = () => {
-        const header = document.querySelector("#header");
+    const showHeader = (playerName) => {
         header.style.display = "block";
 
         const player = document.querySelector("#player");
-        if (player) player.innerHTML = currentPlayer.getName();
+        if (player) player.innerHTML = playerName;
     };
 
-    const startGame = () => {
-        const board = document.querySelector(".gameboard");
+    const showBoardGame = () => {
         board.style.display = "block";
-
-        const player1 = document.querySelector("#player1");
-        playerX.changeName(player1.value);
-
-        const player2 = document.querySelector("#player2");
-        playerO.changeName(player2.value);
-
-        hideStartContainer();
-        showHeader();
     };
 
-    const restartGame = () => {
-        playerX.emptySelectedBoxes();
-        playerO.emptySelectedBoxes();
+    const updatePlayerName = (targerPlayer, playerName) => {
+        const player = document.querySelector(`#${playerName}`);
+        targerPlayer.changeName(player.value);
+    };
 
-        currentPlayer = playerX;
-        currentPlayer.emptySelectedBoxes();
+    const updateHeader = (playerName) => {
+        header.innerHTML = `Current Player: <span id="player">${playerName}</span>`;
+    };
 
-        totalSelectedBoxes = 0;
+    const restartContainerDisplay = (hide = false) => {
+        restartContainer.style.display = hide ? "none" : "block";
+    };
 
-        const header = document.querySelector("#header");
-        header.innerHTML = `Current Player: <span id="player">${currentPlayer.getName()}</span>`;
-
-        const restartContainer = document.querySelector(".restart-container");
-        restartContainer.style.display = "none";
-
-        // remove all marks in boxes
-        const boxes = document.querySelectorAll(".box");
+    const removeAllMarks = () => {
         boxes.forEach((box) => {
             const p = box.querySelector("p");
             p.innerHTML = "";
         });
     };
 
-    const gameEnded = (isNoAvailableMoves) => {
-        const header = document.querySelector("#header");
-
+    const showEndedGameMessage = (playerName, isNoAvailableMoves) => {
         if (!isNoAvailableMoves) {
-            header.innerHTML = `The game ended! Player ${currentPlayer.getName()} won the game!`;
+            header.innerHTML = `The game ended! Player ${playerName} won the game!`;
         } else {
             header.innerHTML = `The game ended! No Player won the game`;
         }
+    };
 
-        const restartContainer = document.querySelector(".restart-container");
-        restartContainer.style.display = "block";
+    const updateCurrentPlayer = (pname) => {
+        if (player) player.innerHTML = pname;
+    };
+
+    const markBox = (event, currentPlayer) => {
+        const selectedBox = event.target;
+        const pTag = selectedBox.querySelector("p");
+        const boxId = selectedBox.id;
+        if (pTag !== "") pTag.innerHTML = currentPlayer.mark;
+        return boxId;
+    };
+
+    return {
+        hideStartContainer,
+        showHeader,
+        showBoardGame,
+        updatePlayerName,
+        updateHeader,
+        restartContainerDisplay,
+        removeAllMarks,
+        showEndedGameMessage,
+        updateCurrentPlayer,
+        markBox
+    };
+};
+
+const gameboard = (function () {
+    const playerX = player("x");
+    const playerO = player("o");
+    const display = displayController();
+    const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
+    let totalSelectedBoxes = 0;
+    let currentPlayer = playerX;
+
+    const startGame = () => {
+        display.showBoardGame();
+        display.updatePlayerName(playerX, "player1");
+        display.updatePlayerName(playerO, "player2");
+        display.hideStartContainer();
+        display.showHeader(currentPlayer.getName());
+    };
+
+    const restartGame = () => {
+        totalSelectedBoxes = 0;
+        playerX.emptySelectedBoxes();
+        playerO.emptySelectedBoxes();
+        currentPlayer = playerX;
+        display.updateHeader(currentPlayer.getName());
+        display.restartContainerDisplay(true);
+        display.removeAllMarks();
+    };
+
+    const gameEnded = (isNoAvailableMoves) => {
+        display.showEndedGameMessage(currentPlayer.getName(), isNoAvailableMoves);
+        display.restartContainerDisplay();
     };
 
     const checkWinningPattern = () => {
@@ -122,15 +160,11 @@ const gameboard = (function () {
             currentPlayer = playerX;
         }
 
-        const player = document.querySelector("#player");
-        if (player) player.innerHTML = currentPlayer.getName();
+        display.updateCurrentPlayer(currentPlayer.getName());
     };
 
     const markBox = (event) => {
-        const selectedBox = event.target;
-        const pTag = selectedBox.querySelector("p");
-        const boxId = selectedBox.id;
-        if (pTag !== "") pTag.innerHTML = currentPlayer.mark;
+        const boxId = display.markBox(event, currentPlayer);
         currentPlayer.recordSelectedBox(boxId);
         totalSelectedBoxes++;
         checkWinningPattern();
