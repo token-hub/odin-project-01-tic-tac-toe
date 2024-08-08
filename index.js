@@ -17,11 +17,10 @@ const player = function (name) {
 };
 
 const gameboard = (function () {
-    // start / restart game
     const playerX = player("x");
     const playerO = player("0");
     const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
-
+    let totalSelectedBoxes = 0;
     let currentPlayer = playerX;
 
     const hideStartButton = () => {
@@ -51,6 +50,8 @@ const gameboard = (function () {
         currentPlayer = playerX;
         currentPlayer.emptySelectedBoxes();
 
+        totalSelectedBoxes = 0;
+
         const header = document.querySelector("#header");
         header.innerHTML = `Current Player: <span id="player">${currentPlayer.name}</span>`;
 
@@ -65,9 +66,14 @@ const gameboard = (function () {
         });
     };
 
-    const gameEnded = () => {
+    const gameEnded = (isNoAvailableMoves) => {
         const header = document.querySelector("#header");
-        header.innerHTML = `The game ended! Player ${currentPlayer.name} won the game!`;
+
+        if (!isNoAvailableMoves) {
+            header.innerHTML = `The game ended! Player ${currentPlayer.name} won the game!`;
+        } else {
+            header.innerHTML = `The game ended! No Player won the game`;
+        }
 
         const restartContainer = document.querySelector(".restart-container");
         restartContainer.style.display = "block";
@@ -87,13 +93,33 @@ const gameboard = (function () {
         }
     };
 
+    const checkNoAvailableMoves = () => {
+        if (totalSelectedBoxes == 9) {
+            gameEnded(true);
+        }
+    };
+
+    const changePlayer = () => {
+        if (currentPlayer.name == "x") {
+            currentPlayer = playerO;
+        } else {
+            currentPlayer = playerX;
+        }
+
+        const player = document.querySelector("#player");
+        if (player) player.innerHTML = currentPlayer.name;
+    };
+
     const markBox = (event) => {
         const selectedBox = event.target;
         const pTag = selectedBox.querySelector("p");
         const boxId = selectedBox.id;
         if (pTag !== "") pTag.innerHTML = currentPlayer.name;
         currentPlayer.recordSelectedBox(boxId);
+        totalSelectedBoxes++;
         checkWinningPattern();
+        checkNoAvailableMoves();
+        changePlayer();
     };
 
     return { showBoard, markBox, restartGame };
