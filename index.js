@@ -3,7 +3,13 @@ const player = function (name) {
     // add mark in the board
     // add player name
 
-    return { name };
+    let selectedBoxes = [];
+
+    const recordSelectedBox = (boxId) => {
+        selectedBoxes.push(boxId);
+    };
+
+    return { name, selectedBoxes, recordSelectedBox };
 };
 
 const gameboard = (function () {
@@ -11,8 +17,6 @@ const gameboard = (function () {
     const playerX = player("x");
     const playerO = player("0");
     const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
-    const playerXPatterns = [];
-    const playerOPatterns = [];
 
     // if player x click box 1.
     // if the total count of player marks is => 3
@@ -22,7 +26,7 @@ const gameboard = (function () {
 
     // * new task
     // record each box clicked by the current player.
-    let currentPlayer = playerX.name;
+    let currentPlayer = playerX;
 
     const hideStartButton = () => {
         const startBtn = document.querySelector("#start-btn");
@@ -34,7 +38,7 @@ const gameboard = (function () {
         header.style.display = "block";
 
         const player = document.querySelector("#player");
-        player.innerHTML = currentPlayer;
+        player.innerHTML = currentPlayer.name;
     };
 
     const showBoard = () => {
@@ -47,7 +51,10 @@ const gameboard = (function () {
     const markBox = (event) => {
         const selectedBox = event.target;
         const pTag = selectedBox.querySelector("p");
-        if (pTag !== "") pTag.innerHTML = currentPlayer;
+        const boxId = selectedBox.id;
+        if (pTag !== "") pTag.innerHTML = currentPlayer.name;
+        currentPlayer.recordSelectedBox(boxId);
+        console.log(currentPlayer.selectedBoxes);
     };
 
     return { showBoard, markBox };
