@@ -11,7 +11,7 @@ const player = function (mark = "x") {
     };
 
     const getSelectedBoxes = () => {
-        return [...selectedBoxes]; // Return a copy to prevent external modification
+        return [...selectedBoxes];
     };
 
     const changeName = (newName) => {
@@ -33,24 +33,25 @@ const displayController = function () {
     const boxes = document.querySelectorAll(".box");
     const player = document.querySelector("#player");
 
-    const hideStartContainer = () => {
-        startBtn.style.display = "none";
+    const startContainerDisplay = (hide = false) => {
+        startBtn.style.display = hide ? "none" : "block";
     };
 
-    const showHeader = (playerName) => {
-        header.style.display = "block";
+    const headerDisplay = (playerName, hide = false) => {
+        header.style.display = hide ? "none" : "block";
 
         const player = document.querySelector("#player");
         if (player) player.innerHTML = playerName;
     };
 
-    const showBoardGame = () => {
-        board.style.display = "block";
+    const boardGameDisplay = (hide = false) => {
+        board.style.display = hide ? "none" : "block";
     };
 
     const updatePlayerName = (targerPlayer, playerName) => {
         const player = document.querySelector(`#${playerName}`);
         targerPlayer.changeName(player.value);
+        player.value = "";
     };
 
     const updateHeader = (playerName) => {
@@ -89,9 +90,9 @@ const displayController = function () {
     };
 
     return {
-        hideStartContainer,
-        showHeader,
-        showBoardGame,
+        startContainerDisplay,
+        headerDisplay,
+        boardGameDisplay,
         updatePlayerName,
         updateHeader,
         restartContainerDisplay,
@@ -109,26 +110,32 @@ const gameboard = (function () {
     const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
     let totalSelectedBoxes = 0;
     let currentPlayer = playerX;
+    let isEnded = false;
 
     const startGame = () => {
-        display.showBoardGame();
+        display.boardGameDisplay();
         display.updatePlayerName(playerX, "player1");
         display.updatePlayerName(playerO, "player2");
-        display.hideStartContainer();
-        display.showHeader(currentPlayer.getName());
+        display.startContainerDisplay(true);
+        display.headerDisplay(currentPlayer.getName());
     };
 
     const restartGame = () => {
         totalSelectedBoxes = 0;
+        isEnded = false;
         playerX.emptySelectedBoxes();
         playerO.emptySelectedBoxes();
         currentPlayer = playerX;
         display.updateHeader(currentPlayer.getName());
         display.restartContainerDisplay(true);
         display.removeAllMarks();
+        display.boardGameDisplay(true);
+        display.headerDisplay(currentPlayer.getName(), true);
+        display.startContainerDisplay();
     };
 
     const gameEnded = (isNoAvailableMoves) => {
+        isEnded = true;
         display.showEndedGameMessage(currentPlayer.getName(), isNoAvailableMoves);
         display.restartContainerDisplay();
     };
@@ -164,6 +171,7 @@ const gameboard = (function () {
     };
 
     const markBox = (event) => {
+        if (isEnded) return;
         const boxId = display.markBox(event, currentPlayer);
         currentPlayer.recordSelectedBox(boxId);
         totalSelectedBoxes++;
