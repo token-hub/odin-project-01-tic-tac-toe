@@ -36,7 +36,7 @@ const gameboard = (function () {
     const markBox = (event) => {
         const selectedBox = event.target;
         const pTag = selectedBox.querySelector("p");
-        pTag.innerHTML = currentPlayer;
+        if (pTag !== "") pTag.innerHTML = currentPlayer;
     };
 
     return { showBoard, markBox };
