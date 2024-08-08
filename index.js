@@ -6,10 +6,16 @@ const gameboard = (function () {
         startBtn.style.display = "none";
     };
 
+    const showHeader = () => {
+        const header = document.querySelector("#header");
+        header.style.display = "block";
+    };
+
     const showBoard = () => {
         const board = document.querySelector(".gameboard");
         board.style.display = "block";
         hideStartButton();
+        showHeader();
     };
 
     return { showBoard, hideStartButton };
