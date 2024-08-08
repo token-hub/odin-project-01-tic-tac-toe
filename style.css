@@ -3,6 +3,7 @@ body {
 }
 
 .container {
+    position: relative;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -49,4 +50,20 @@ body {
 
 #player {
     text-transform: capitalize;
+}
+
+.restart-container {
+    display: none;
+    position: absolute;
+    background-color: gray;
+    height: 170px;
+    width: 500px;
+}
+
+.contents {
+    height: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
