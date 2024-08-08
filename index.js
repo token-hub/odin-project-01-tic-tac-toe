@@ -1,15 +1,19 @@
-// player x and player o
 const player = function (name) {
-    // add mark in the board
-    // add player name
-
     let selectedBoxes = [];
 
     const recordSelectedBox = (boxId) => {
         selectedBoxes.push(boxId);
     };
 
-    return { name, selectedBoxes, recordSelectedBox };
+    const emptySelectedBoxes = () => {
+        selectedBoxes = [];
+    };
+
+    const getSelectedBoxes = () => {
+        return [...selectedBoxes]; // Return a copy to prevent external modification
+    };
+
+    return { name, getSelectedBoxes, recordSelectedBox, emptySelectedBoxes };
 };
 
 const gameboard = (function () {
@@ -30,7 +34,7 @@ const gameboard = (function () {
         header.style.display = "block";
 
         const player = document.querySelector("#player");
-        player.innerHTML = currentPlayer.name;
+        if (player) player.innerHTML = currentPlayer.name;
     };
 
     const showBoard = () => {
@@ -40,20 +44,42 @@ const gameboard = (function () {
         showHeader();
     };
 
+    const restartGame = () => {
+        playerX.emptySelectedBoxes();
+        playerO.emptySelectedBoxes();
+
+        currentPlayer = playerX;
+        currentPlayer.emptySelectedBoxes();
+
+        const header = document.querySelector("#header");
+        header.innerHTML = `Current Player: <span id="player">${currentPlayer.name}</span>`;
+
+        const restartContainer = document.querySelector(".restart-container");
+        restartContainer.style.display = "none";
+
+        // remove all marks in boxes
+        const boxes = document.querySelectorAll(".box");
+        boxes.forEach((box) => {
+            const p = box.querySelector("p");
+            p.innerHTML = "";
+        });
+    };
+
     const gameEnded = () => {
-        // show restart button
-        // show player that won the game.
         const header = document.querySelector("#header");
         header.innerHTML = `The game ended! Player ${currentPlayer.name} won the game!`;
+
+        const restartContainer = document.querySelector(".restart-container");
+        restartContainer.style.display = "block";
     };
 
     const checkWinningPattern = () => {
-        if (currentPlayer.selectedBoxes.length >= 3) {
+        if (currentPlayer.getSelectedBoxes().length >= 3) {
             // -- loop through the winning patterns
             winningPatterns.forEach((pattern) => {
                 // compare the current player's selected boxes with the current winning pattern.
                 // if the count of duplicate id's is 3 then the current player won the game
-                const duplicates = currentPlayer.selectedBoxes.filter((item) => pattern.includes(item));
+                const duplicates = currentPlayer.getSelectedBoxes().filter((item) => pattern.includes(item));
                 if (duplicates.length == 3) {
                     gameEnded();
                 }
@@ -70,7 +96,7 @@ const gameboard = (function () {
         checkWinningPattern();
     };
 
-    return { showBoard, markBox };
+    return { showBoard, markBox, restartGame };
 })();
 
 // * task 1
