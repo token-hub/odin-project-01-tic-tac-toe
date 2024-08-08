@@ -9,7 +9,6 @@ const gameboard = (function () {
     const showBoard = () => {
         const board = document.querySelector(".gameboard");
         board.style.display = "block";
-
         hideStartButton();
     };
 
@@ -17,11 +16,14 @@ const gameboard = (function () {
 })();
 
 // player x and player o
-const player = (function () {
+const player = function () {
     // add mark in the board
     // add player name
     return {};
-})();
+};
+
+const playerX = player();
+const playerO = player();
 
 // * task 1
 // when the player clicks the start button
