@@ -18,14 +18,6 @@ const gameboard = (function () {
     const playerO = player("0");
     const winningPatterns = ["123", "456", "789", "147", "258", "369", "159", "357"];
 
-    // if player x click box 1.
-    // if the total count of player marks is => 3
-    // -- loop through the winning patterns
-    // -- each winning pattern will need to be loop again 3 times.
-    // if a all the box numbers of the current winning pattern matches with the current player clicked boxes then it's a win.
-
-    // * new task
-    // record each box clicked by the current player.
     let currentPlayer = playerX;
 
     const hideStartButton = () => {
@@ -48,13 +40,34 @@ const gameboard = (function () {
         showHeader();
     };
 
+    const gameEnded = () => {
+        // show restart button
+        // show player that won the game.
+        const header = document.querySelector("#header");
+        header.innerHTML = `The game ended! Player ${currentPlayer.name} won the game!`;
+    };
+
+    const checkWinningPattern = () => {
+        if (currentPlayer.selectedBoxes.length >= 3) {
+            // -- loop through the winning patterns
+            winningPatterns.forEach((pattern) => {
+                // compare the current player's selected boxes with the current winning pattern.
+                // if the count of duplicate id's is 3 then the current player won the game
+                const duplicates = currentPlayer.selectedBoxes.filter((item) => pattern.includes(item));
+                if (duplicates.length == 3) {
+                    gameEnded();
+                }
+            });
+        }
+    };
+
     const markBox = (event) => {
         const selectedBox = event.target;
         const pTag = selectedBox.querySelector("p");
         const boxId = selectedBox.id;
         if (pTag !== "") pTag.innerHTML = currentPlayer.name;
         currentPlayer.recordSelectedBox(boxId);
-        console.log(currentPlayer.selectedBoxes);
+        checkWinningPattern();
     };
 
     return { showBoard, markBox };
