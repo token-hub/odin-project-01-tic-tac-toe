@@ -10,10 +10,11 @@ body {
 }
 
 #start-btn {
-    display: none;
+    display: block;
 }
 
 .gameboard {
+    display: none;
     position: relative;
     height: 500px;
     width: 500px;
