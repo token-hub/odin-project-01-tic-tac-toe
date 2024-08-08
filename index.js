@@ -1,5 +1,17 @@
+// player x and player o
+const player = function (name) {
+    // add mark in the board
+    // add player name
+
+    return { name };
+};
+
 const gameboard = (function () {
     // start / restart game
+    const playerX = player("x");
+    const playerO = player("0");
+
+    let currentPlayer = playerX.name;
 
     const hideStartButton = () => {
         const startBtn = document.querySelector("#start-btn");
@@ -9,6 +21,9 @@ const gameboard = (function () {
     const showHeader = () => {
         const header = document.querySelector("#header");
         header.style.display = "block";
+
+        const player = document.querySelector("#player");
+        player.innerHTML = currentPlayer;
     };
 
     const showBoard = () => {
@@ -18,18 +33,8 @@ const gameboard = (function () {
         showHeader();
     };
 
-    return { showBoard, hideStartButton };
+    return { showBoard };
 })();
-
-// player x and player o
-const player = function () {
-    // add mark in the board
-    // add player name
-    return {};
-};
-
-const playerX = player();
-const playerO = player();
 
 // * task 1
 // when the player clicks the start button

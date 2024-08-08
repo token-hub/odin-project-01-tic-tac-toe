@@ -46,3 +46,7 @@ body {
 #header {
     display: none;
 }
+
+#player {
+    text-transform: capitalize;
+}
